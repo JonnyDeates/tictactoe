@@ -26,11 +26,25 @@ class App extends Component {
 
   render() {
     const checkWinner = () => {
-      for (let i = 0; i < 3; i++) {
-        if(this.state.grid[i][0] + this.state.grid[i][1] + this.state.grid[i][2] === 'XXX')
-          this.setState({winner: !this.state.currentTurn ? 'X' : 'O'})
-        };
+      const grid = this.state.grid;
+      const setWinner = () => this.setState({winner: !this.state.currentTurn ? 'X' : 'O'})
+      const checkers = ['XXX','OOO']
+      for(let check of checkers) {     
+        for (let i = 0; i < 3; i++) {
+          if(grid[i][0] + grid[i][1] + grid[i][2] === check) // Horizontal Check
+            setWinner()
+
+          if(grid[0][i] + grid[1][i] + grid[2][i] === check) // Vertical Check
+            setWinner()
+          };
+          if(grid[0][0] + grid[1][1] + grid[2][2] === check) // Diagonal Check
+            setWinner()
+
+          if(grid[0][2] + grid[1][1] + grid[2][0] === check) // Diagonal Check
+            setWinner()
+
     }
+  }
     const someFunction = (e,row,col) => {
       e.preventDefault();
       const tempGrid = this.state.grid;
@@ -43,11 +57,10 @@ class App extends Component {
       <div className="App">
         <h2>Winner {this.state.winner}</h2>
         <h2>Current Turn: {this.state.currentTurn ? 'X' : 'O'}</h2>
-        {
-          this.state.grid.map((row, i)=> <div>
-              {row.map((col,j) => (col === 0) ? <button onClick={(e)=> someFunction(e,i,j)}>{col}</button> : <span>{col}</span>)}
-            </div>)
-        }
+        <button onClick={()=>this.setState({currentTurn: true, grid: [[0, 0, 0],[0, 0, 0], [0, 0, 0]], winner: ''})}>Reset</button> 
+        { this.state.grid.map((row, i)=> <div>
+              {row.map((col,j) => (col === 0) ? <button onClick={(event)=> someFunction(event,i,j)}>{col}</button> : <span>{col}</span>)}
+            </div>)}
     </div>
   );
 }
